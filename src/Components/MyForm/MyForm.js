@@ -1,40 +1,39 @@
-import React, { Component } from 'react';
+import {useState} from 'react';
 import PropTypes from 'prop-types';
 import styles from './MyForm.module.css';
 
-class MyForm extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-  };
+export default function MyForm ({onSubmitForm}) {
+  
+  const [name, setName] = useState('');
+  const [number, setNumber]= useState('');
 
-  state = {
-    name: '',
-    number: '',
-  };
 
-  onSubmit = e => {
+ const onSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.formReset();
+    onSubmitForm({name,number});
+    formReset();
   };
 
-  formReset = () => {
-    this.setState({ name: '', number: '' });
+  const formReset = () => {
+    setName('');
+    setNumber('');
   };
 
-  onChange = e => {
-    this.setState({ [e.currentTarget.name]: e.currentTarget.value });
+  const onChangeName = e => {
+    setName(e.currentTarget.value);    
   };
 
-  render() {
-    const { name, number } = this.state;
+  const onChangeTel = e => {
+      setNumber(e.currentTarget.value);
+  };
+    
     return (
-      <form onSubmit={this.onSubmit} className={styles.form}>
+      <form onSubmit={onSubmit} className={styles.form}>
         <label className={styles.lebels}>
           Name:
           <input
             type="text"
-            onChange={this.onChange}
+            onChange={onChangeName}
             value={name}
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -47,19 +46,21 @@ class MyForm extends Component {
           <input
             type="tel"
             value={number}
-            onChange={this.onChange}
+            onChange={onChangeTel}
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
             required
           />
         </label>
-        <button type="submit" onSubmit={this.onSubmit} className={styles.btn}>
+        <button type="submit" onSubmit={onSubmit} className={styles.btn}>
           Add contact
         </button>
       </form>
     );
   }
-}
 
-export default MyForm;
+  MyForm.propTypes = {
+    onSubmitForm: PropTypes.func.isRequired,
+        };
+
